@@ -27,9 +27,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rural-complaints')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rural-complaints', {
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+})
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
+
+// Monitor connection status
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
 
 // Routes
 app.use('/api/admin', adminRoutes);

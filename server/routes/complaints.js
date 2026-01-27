@@ -13,7 +13,8 @@ const getAddressFromCoordinates = async (lat, lng) => {
       {
         headers: {
           'User-Agent': 'RuralComplaintSystem/1.0'
-        }
+        },
+        timeout: 10000 // 10 second timeout
       }
     );
 
@@ -123,8 +124,11 @@ router.post('/', upload.single('image'), async (req, res) => {
 
       // Validate location has lat and lng
       if (!parsedLocation.lat || !parsedLocation.lng) {
+        console.error('Invalid location structure:', parsedLocation);
         throw new Error('Location must have lat and lng properties');
       }
+      
+      console.log('Parsed location:', parsedLocation);
     } catch (parseError) {
       console.error('Location parse error:', parseError, 'Received:', location);
       return res.status(400).json({ message: 'Invalid location format', details: parseError.message });
@@ -132,12 +136,15 @@ router.post('/', upload.single('image'), async (req, res) => {
 
     // Auto-detect category
     const category = detectCategory(complaintText);
+    console.log('Detected category:', category);
 
     // Get image URL if uploaded
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
     // Get address details from coordinates
+    console.log('Fetching address for coordinates:', parsedLocation.lat, parsedLocation.lng);
     const addressDetails = await getAddressFromCoordinates(parsedLocation.lat, parsedLocation.lng);
+    console.log('Address details:', addressDetails);
 
     // Create complaint
     const complaint = new Complaint({
@@ -151,6 +158,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       status: 'Open'
     });
 
+    console.log('Saving complaint to database...');
     await complaint.save();
 
     console.log('Complaint saved successfully:', complaint._id);
@@ -161,7 +169,12 @@ router.post('/', upload.single('image'), async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating complaint:', error);
-    res.status(500).json({ message: 'Failed to submit complaint', error: error.message });
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      message: 'Failed to submit complaint', 
+      error: error.message,
+      details: error.toString()
+    });
   }
 });
 
