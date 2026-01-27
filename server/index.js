@@ -27,8 +27,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
+const sanitizedMongoUri = () => {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) return 'undefined';
+  return uri.replace(/\/\/.*@/, '//***:***@'); // mask credentials
+};
+
 if (!process.env.MONGODB_URI) {
   console.error('MONGODB_URI is not set - falling back to localhost. Set it in Render env vars.');
+} else {
+  console.log('Using MONGODB_URI:', sanitizedMongoUri());
 }
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rural-complaints', {
