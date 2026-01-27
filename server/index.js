@@ -39,11 +39,18 @@ if (!process.env.MONGODB_URI) {
   console.log('Using MONGODB_URI:', sanitizedMongoUri());
 }
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rural-complaints', {
-  serverSelectionTimeoutMS: 5000 // Timeout after 5s instead of 30s
-})
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+const connectDb = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rural-complaints', {
+      serverSelectionTimeoutMS: 10000 // allow a bit more time for Atlas/serverless wake-up
+    });
+    console.log('MongoDB connected successfully');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    // Exit so platform restarts; avoids serving traffic without DB
+    process.exit(1);
+  }
+};
 
 // Monitor connection status
 mongoose.connection.on('disconnected', () => {
@@ -71,7 +78,13 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Upload directory: ${path.join(__dirname, 'uploads')}`);
-});
+const startServer = async () => {
+  await connectDb();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Upload directory: ${path.join(__dirname, 'uploads')}`);
+  });
+};
+
+startServer();
