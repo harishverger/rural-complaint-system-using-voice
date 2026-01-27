@@ -22,6 +22,10 @@ const Dashboard = () => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [banner, setBanner] = useState({ type: '', message: '' });
+
+  // Derive API origin for static assets (uploads)
+  const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
 
   useEffect(() => {
     checkAuth();
@@ -77,10 +81,12 @@ const Dashboard = () => {
     try {
       await complaintAPI.updateComplaint(id, { status: newStatus });
       await fetchData();
-      alert('Status updated successfully!');
+      setBanner({ type: 'success', message: 'Status updated successfully' });
+      setTimeout(() => setBanner({ type: '', message: '' }), 2500);
     } catch (error) {
       console.error('Error updating status:', error);
-      alert('Failed to update status');
+      setBanner({ type: 'error', message: 'Failed to update status' });
+      setTimeout(() => setBanner({ type: '', message: '' }), 3000);
     }
   };
 
@@ -91,14 +97,17 @@ const Dashboard = () => {
         const response = await complaintAPI.updateComplaint(id, { volunteerAssigned: volunteerName.trim() });
         if (response.data) {
           await fetchData();
-          alert('Volunteer assigned successfully!');
+          setBanner({ type: 'success', message: 'Volunteer assigned successfully' });
+          setTimeout(() => setBanner({ type: '', message: '' }), 2500);
         }
       } catch (error) {
         console.error('Error assigning volunteer:', error);
-        alert('Failed to assign volunteer. ' + (error.response?.data?.message || error.message));
+        setBanner({ type: 'error', message: 'Failed to assign volunteer' });
+        setTimeout(() => setBanner({ type: '', message: '' }), 3000);
       }
     } else if (volunteerName !== null) {
-      alert('Please enter a valid volunteer name');
+      setBanner({ type: 'error', message: 'Please enter a valid volunteer name' });
+      setTimeout(() => setBanner({ type: '', message: '' }), 3000);
     }
   };
 
@@ -163,6 +172,14 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* Page Banner */}
+      {banner.message && (
+        <div className={`w-full ${banner.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} border-b ${banner.type === 'success' ? 'border-green-200' : 'border-red-200'} py-2` }>
+          <div className="max-w-7xl mx-auto px-4 text-sm font-medium">
+            {banner.message}
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 py-6">
@@ -401,7 +418,19 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
                   <label className="font-semibold text-gray-700 text-sm">Complaint ID:</label>
-                  <p className="font-mono font-bold text-purple-600 text-lg break-all mt-1">{selectedComplaint._id}</p>
+                  <div className="flex items-start gap-3 mt-1">
+                    <p className="font-mono font-bold text-purple-600 text-lg break-all">{selectedComplaint._id}</p>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedComplaint._id);
+                        setBanner({ type: 'success', message: 'Complaint ID copied' });
+                        setTimeout(() => setBanner({ type: '', message: '' }), 1500);
+                      }}
+                      className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200"
+                    >
+                      Copy
+                    </button>
+                  </div>
                 </div>
 
                 <div>
@@ -486,7 +515,7 @@ const Dashboard = () => {
                   <div>
                     <label className="font-semibold text-gray-700">Photo:</label>
                     <img
-                      src={`http://localhost:5000${selectedComplaint.imageUrl}`}
+                      src={`${API_ORIGIN}${selectedComplaint.imageUrl}`}
                       alt="Complaint"
                       className="mt-2 w-full h-auto rounded-lg"
                     />
