@@ -27,8 +27,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
+if (!process.env.MONGODB_URI) {
+  console.error('MONGODB_URI is not set - falling back to localhost. Set it in Render env vars.');
+}
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rural-complaints', {
-  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  serverSelectionTimeoutMS: 5000 // Timeout after 5s instead of 30s
 })
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
