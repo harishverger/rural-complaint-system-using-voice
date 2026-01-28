@@ -25,6 +25,7 @@ export const adminAPI = {
 export const complaintAPI = {
   getAllComplaints: (filters) => api.get('/complaints', { params: filters }),
   updateComplaint: (id, data) => api.put(`/complaints/${id}`, data),
+  deleteComplaint: (id) => api.delete(`/complaints/${id}`),
   getAnalytics: () => api.get('/complaints/analytics/stats'),
 };
 

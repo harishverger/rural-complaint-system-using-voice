@@ -28,22 +28,33 @@ const Preview = () => {
   }, [location, navigate]);
 
   const detectCategory = (text) => {
-    const lowerText = text.toLowerCase();
+    // Normalize Unicode characters for proper Tamil/Telugu matching
+    const normalizedText = text.normalize('NFC');
+    const lowerText = normalizedText.toLowerCase();
     
     const categories = {
+      streetlight: [
+        'light', 'street light', 'lamp', 'bulb', 'electricity', 'pole', 'dark', 'lighting', 'power', 'current', 'not working',
+        'electric', 'electrical', 'no light', 'no electricity', 'no current', 'no power', 'power cut', 'load shedding',
+        'विद्युत', 'करंट', 'लाइट', 'बिजली', 'बत्ती', 'स्ट्रीट लाइट', 'अंधेरा', 'खम्भा', 'इलेक्ट्रिसिटी', 'पावर',
+        'करेंट नहीं', 'बिजली नहीं', 'लाइट नहीं', 'बिजली का', 'बिजली की',
+        'விளக்கு', 'தெரு விளக்கு', 'மின்சாரம்', 'இருட்டு', 'மின்',
+        'లైట్', 'విద్యుత్', 'బల్బు', 'స్ట్రీట్ లైట్', 'చీకటి', 'కరెంట్',
+        'vilakku', 'light', 'current', 'minsaram', 'vidyut', 'bijli', 'andhere', 'kurrent', 'current nahi', 'bijli nahi'
+      ],
       water: [
-        'water', 'pipe', 'leak', 'leaking', 'leakage', 'drainage', 'drain', 'tap', 'supply', 'bore', 'well', 'pump', 'motor',
+        'water', 'pipe', 'leak', 'leaking', 'leakage', 'drainage', 'drain', 'tap', 'supply', 'bore', 'well', 'pump', 'motor', 'valve',
         'தண்ணீர்', 'தண்ணி', 'னீரு', 'குழாய்', 'கசிவு', 'வடிகால்',
         'నీరు', 'పైపు', 'కుళాయి', 'లీకేజ్', 'డ్రైనేజ్',
-        'पानी', 'पाइप', 'नल', 'लीकेज', 'रिसाव', 'जल', 'जलापूर्ति',
+        'पानी', 'पाइप', 'नल', 'लीकेज', 'रिसाव', 'जल', 'जलापूर्ति', 'पानी का', 'पानी की',
         'thani', 'thaani', 'taani', 'kuzhay', 'kuzhai', 'neeru', 'paani'
       ],
       road: [
         'road', 'pothole', 'street', 'highway', 'damage', 'broken', 'crack', 'repair', 'construction', 'pathway', 'sidewalk',
-        'சாலை', 'குழி', 'பாதை', 'தெரு', 'உடைந்த', 'சேதம்',
-        'రోడ్డు', 'రోడ్', 'గుంట', 'దారి', 'పాతబడిన',
-        'सड़क', 'रोड', 'गड्ढा', 'गड्ढे', 'रास्ता', 'मार्ग', 'टूटा',
-        'salai', 'sarai', 'roddu', 'sadak', 'gunta', 'kuzhi', 'patha'
+        'சாலை', 'குழி', 'பாதை', 'தெரு', 'ரோடு', 'வீதி', 'உடைந்த', 'சேதம்', 'சாலை சேதம்', 'குழிகள்', 'சாலை உடைந்துள்ளது', 'சாலை பழுது', 'ரோடு சேதம்', 'தெரு சேதம்', 'வீதி சேதம்',
+        'రోడ్డు', 'రోడ్', 'గుంట', 'దారి', 'పాతబడిన', 'రోడ్డు పాడు', 'గుంతలు', 'రోడ్డు చెడిపోయింది', 'రోడ్డు సమస్య',
+        'सड़क', 'रोड', 'गड्ढा', 'गड्ढे', 'रास्ता', 'मार्ग', 'टूटा', 'सड़क खराब', 'रोड खराब', 'सड़क टूटी', 'रास्ता खराब', 'गड्ढे हैं',
+        'salai', 'saalai', 'theru', 'theruvil', 'rodu', 'veethi', 'veedhi', 'paadhai', 'roddu', 'sadak', 'gunta', 'kuzhi', 'patha', 'sadak kharab', 'rodu sedam'
       ],
       health: [
         'health', 'hospital', 'doctor', 'clinic', 'medicine', 'medical', 'sick', 'disease', 'fever', 'pain', 'emergency', 'ambulance',
@@ -51,13 +62,6 @@ const Preview = () => {
         'ఆరోగ్యం', 'ఆసుపత్రి', 'డాక్టర్', 'వైద్యం', 'అనారోగ్యం',
         'स्वास्थ्य', 'अस्पताल', 'डॉक्टर', 'दवा', 'बीमारी', 'दर्द', 'चिकित्सा',
         'maruthuvam', 'hospital', 'doctor', 'arogyam', 'vaidyam', 'swasthya'
-      ],
-      streetlight: [
-        'light', 'street light', 'lamp', 'bulb', 'electricity', 'pole', 'dark', 'lighting', 'power', 'current', 'not working',
-        'விளக்கு', 'தெரு விளக்கு', 'மின்சாரம்', 'இருட்டு', 'மின்',
-        'లైట్', 'విద్యుత్', 'బల్బు', 'స్ట్రీట్ లైట్', 'చీకటి',
-        'बत्ती', 'लाइट', 'बिजली', 'स्ट्रीट लाइट', 'अंधेरा', 'खम्भा',
-        'vilakku', 'light', 'current', 'minsaram', 'vidyut', 'bijli', 'andhere'
       ],
       sanitation: [
         'garbage', 'waste', 'trash', 'dirt', 'clean', 'cleaning', 'dustbin', 'dump', 'litter', 'smell', 'toilet', 'drainage', 'sewer',
@@ -68,8 +72,15 @@ const Preview = () => {
       ]
     };
 
+    // Check streetlight first for electricity-related keywords
     for (const [category, keywords] of Object.entries(categories)) {
-      if (keywords.some(keyword => lowerText.includes(keyword))) {
+      // Normalize keywords as well for consistent Unicode matching
+      const hasMatch = keywords.some(keyword => {
+        const normalizedKeyword = keyword.normalize('NFC').toLowerCase();
+        return lowerText.includes(normalizedKeyword);
+      });
+      
+      if (hasMatch) {
         return category;
       }
     }
@@ -130,7 +141,8 @@ const Preview = () => {
         complaintText: complaintData.complaintText,
         language: complaintData.language,
         location: complaintData.location,
-        hasImage: !!location.state?.image
+        hasImage: !!location.state?.image,
+        apiUrl: import.meta.env.VITE_API_URL
       });
 
       const response = await complaintAPI.createComplaint(formData);
@@ -147,7 +159,20 @@ const Preview = () => {
       }
     } catch (error) {
       console.error('Error submitting complaint:', error);
-      alert(strings.submitFail);
+      
+      // Provide more detailed error messages
+      let errorMessage = strings.submitFail;
+      if (error.message === 'Network Error') {
+        errorMessage = 'Network error - please check your connection and try again. Make sure the server is running.';
+      } else if (error.response?.status === 400) {
+        errorMessage = 'Missing required fields - please fill in all information';
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Server error - please try again later';
+      } else if (error.message?.includes('ERR_CONNECTION_REFUSED')) {
+        errorMessage = 'Cannot connect to server. Please make sure the server is running on port 5000.';
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

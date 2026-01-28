@@ -4,6 +4,8 @@ import { complaintAPI } from '../api/api';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import AssignVolunteerModal from '../components/AssignVolunteerModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 // Fix for default marker icons in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -23,6 +25,12 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [banner, setBanner] = useState({ type: '', message: '' });
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [assigningComplaintId, setAssigningComplaintId] = useState(null);
+  const [modalMode, setModalMode] = useState('assign'); // 'assign' or 'change'
+  const [editingVolunteerName, setEditingVolunteerName] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingComplaint, setDeletingComplaint] = useState(null);
 
   // Derive API origin for static assets (uploads)
   const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
@@ -90,14 +98,13 @@ const Dashboard = () => {
     }
   };
 
-  const handleVolunteerAssign = async (id) => {
-    const volunteerName = prompt('Enter volunteer name:');
+  const handleVolunteerAssign = async (id, volunteerName) => {
     if (volunteerName && volunteerName.trim()) {
       try {
         const response = await complaintAPI.updateComplaint(id, { volunteerAssigned: volunteerName.trim() });
         if (response.data) {
           await fetchData();
-          setBanner({ type: 'success', message: 'Volunteer assigned successfully' });
+          setBanner({ type: 'success', message: `✓ Successfully assigned to ${volunteerName.trim()}!` });
           setTimeout(() => setBanner({ type: '', message: '' }), 2500);
         }
       } catch (error) {
@@ -105,8 +112,51 @@ const Dashboard = () => {
         setBanner({ type: 'error', message: 'Failed to assign volunteer' });
         setTimeout(() => setBanner({ type: '', message: '' }), 3000);
       }
-    } else if (volunteerName !== null) {
-      setBanner({ type: 'error', message: 'Please enter a valid volunteer name' });
+    }
+  };
+
+  const handleOpenAssignModal = (id) => {
+    setAssigningComplaintId(id);
+    setModalMode('assign');
+    setEditingVolunteerName('');
+    setShowAssignModal(true);
+  };
+
+  const handleOpenChangeVolunteerModal = (id, currentName) => {
+    setAssigningComplaintId(id);
+    setModalMode('change');
+    setEditingVolunteerName(currentName);
+    setShowAssignModal(true);
+  };
+
+  const handleOpenDeleteModal = (complaint) => {
+    setDeletingComplaint(complaint);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeletingComplaint(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingComplaint) return;
+
+    try {
+      console.log('Deleting complaint:', deletingComplaint._id);
+      const response = await complaintAPI.deleteComplaint(deletingComplaint._id);
+      console.log('Delete response:', response.data);
+      
+      handleCloseDeleteModal();
+      await fetchData();
+      
+      setBanner({ type: 'success', message: '✓ Complaint deleted successfully!' });
+      setTimeout(() => setBanner({ type: '', message: '' }), 2500);
+    } catch (error) {
+      console.error('Error deleting complaint:', error);
+      console.error('Error response:', error.response?.data);
+      handleCloseDeleteModal();
+      setBanner({ type: 'error', message: 'Failed to delete complaint: ' + (error.response?.data?.message || error.message) });
       setTimeout(() => setBanner({ type: '', message: '' }), 3000);
     }
   };
@@ -366,22 +416,42 @@ const Dashboard = () => {
                       </select>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      {complaint.volunteerAssigned || (
+                      {complaint.volunteerAssigned ? (
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-700">{complaint.volunteerAssigned}</span>
+                          <button
+                            onClick={() => handleOpenChangeVolunteerModal(complaint._id, complaint.volunteerAssigned)}
+                            className="text-red-600 hover:text-red-800 text-xs font-medium hover:bg-red-50 px-2 py-1 rounded transition-all"
+                            title="Change volunteer"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          onClick={() => handleVolunteerAssign(complaint._id)}
-                          className="text-purple-600 hover:text-purple-800 font-medium"
+                          onClick={() => handleOpenAssignModal(complaint._id)}
+                          className="text-purple-600 hover:text-purple-800 font-medium hover:bg-purple-50 px-3 py-1 rounded-lg transition-all"
                         >
                           + Assign
                         </button>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <button
-                        onClick={() => setSelectedComplaint(complaint)}
-                        className="text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        View
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedComplaint(complaint)}
+                          className="text-blue-600 hover:text-blue-800 font-medium hover:bg-blue-50 px-3 py-1 rounded transition-all"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => handleOpenDeleteModal(complaint)}
+                          className="text-red-600 hover:text-red-800 font-medium hover:bg-red-50 px-3 py-1 rounded transition-all"
+                          title="Delete complaint"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -536,6 +606,25 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Assign Volunteer Modal */}
+      <AssignVolunteerModal
+        isOpen={showAssignModal}
+        onClose={() => setShowAssignModal(false)}
+        onSubmit={handleVolunteerAssign}
+        complaintId={assigningComplaintId}
+        mode={modalMode}
+        currentVolunteerName={editingVolunteerName}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        complaintId={deletingComplaint?._id}
+        complaintText={deletingComplaint?.complaintText}
+      />
     </div>
   );
 };
