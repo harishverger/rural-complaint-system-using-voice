@@ -17,6 +17,7 @@ app.use(cors({
     'http://localhost:3002',
     'https://ruralvoice.netlify.app',
     'https://admin-ruralvoice.netlify.app',
+    'https://ruralvoice.vercel.app',
     'https://rural-complaint-system-using-voice.vercel.app',
     'https://rural-complaint-client.vercel.app',
     'https://rural-complaint-admin.vercel.app',
