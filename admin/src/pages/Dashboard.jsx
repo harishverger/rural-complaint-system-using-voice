@@ -162,9 +162,13 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminEmail');
-    navigate('/login');
+    setBanner({ type: 'success', message: '✓ Logged out successfully! Redirecting...' });
+    
+    setTimeout(() => {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminEmail');
+      navigate('/login');
+    }, 1500);
   };
 
   const getCategoryIcon = (category) => {
