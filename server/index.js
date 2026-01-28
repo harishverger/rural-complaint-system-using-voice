@@ -16,7 +16,11 @@ app.use(cors({
     'http://localhost:3001', 
     'http://localhost:3002',
     'https://ruralvoice.netlify.app',
-    'https://admin-ruralvoice.netlify.app'
+    'https://admin-ruralvoice.netlify.app',
+    'https://rural-complaint-system-using-voice.vercel.app',
+    'https://rural-complaint-client.vercel.app',
+    'https://rural-complaint-admin.vercel.app',
+    /\.vercel\.app$/  // Allow all Vercel subdomains
   ],
   credentials: true
 }));
