@@ -199,17 +199,17 @@ const Home = () => {
         </div>
 
         {/* Main Card */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-8 mb-4 border border-purple-100 hover:shadow-purple-200 transition-all duration-300">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 mb-3 sm:mb-4 border border-purple-100 hover:shadow-purple-200 transition-all duration-300">
           {/* Language Selector */}
-          <div className="mb-6">
-            <label className="block text-gray-800 font-bold mb-3 text-lg flex items-center gap-2">
-              <span className="text-2xl">🌐</span>
+          <div className="mb-4 sm:mb-6">
+            <label className="block text-gray-800 font-bold mb-2 sm:mb-3 text-base sm:text-lg flex items-center gap-2">
+              <span className="text-xl sm:text-2xl">🌐</span>
               {strings.selectLanguageLabel}
             </label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full px-5 py-4 border-2 border-purple-200 rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 focus:outline-none text-lg font-medium bg-gradient-to-r from-purple-50 to-pink-50 hover:border-purple-400 transition-all cursor-pointer"
+              className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-purple-200 rounded-xl sm:rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 focus:outline-none text-base sm:text-lg font-medium bg-gradient-to-r from-purple-50 to-pink-50 hover:border-purple-400 transition-all cursor-pointer"
             >
               <option value="English">English</option>
               <option value="Tamil">தமிழ் (Tamil)</option>
@@ -219,10 +219,10 @@ const Home = () => {
           </div>
 
           {/* Voice Recording Button */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <button
               onClick={isRecording ? stopRecording : startRecording}
-              className={`relative w-full py-8 px-6 rounded-2xl text-white font-bold text-xl transition-all transform hover:scale-105 shadow-lg overflow-hidden ${
+              className={`relative w-full py-6 sm:py-8 px-4 sm:px-6 rounded-xl sm:rounded-2xl text-white font-bold text-lg sm:text-xl transition-all transform active:scale-95 sm:hover:scale-105 shadow-lg overflow-hidden ${
                 isRecording
                   ? 'bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 shadow-red-300 animate-pulse-slow'
                   : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 shadow-purple-300'
@@ -247,23 +247,23 @@ const Home = () => {
           </div>
 
           {/* Complaint Text Area */}
-          <div className="mb-6">
-            <label className="block text-gray-800 font-bold mb-3 text-lg flex items-center gap-2">
-              <span className="text-2xl">📝</span>
+          <div className="mb-4 sm:mb-6">
+            <label className="block text-gray-800 font-bold mb-2 sm:mb-3 text-base sm:text-lg flex items-center gap-2">
+              <span className="text-xl sm:text-2xl">📝</span>
               {strings.typeLabel}
             </label>
             <textarea
               value={complaintText}
               onChange={(e) => setComplaintText(e.target.value)}
               placeholder={strings.complaintPlaceholder}
-              rows="6"
-              className="w-full px-5 py-4 border-2 border-purple-200 rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 focus:outline-none text-lg resize-none bg-gradient-to-br from-purple-50/50 to-pink-50/50 hover:border-purple-300 transition-all"
+              rows="5"
+              className="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-purple-200 rounded-xl sm:rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 focus:outline-none text-base sm:text-lg resize-none bg-gradient-to-br from-purple-50/50 to-pink-50/50 hover:border-purple-300 transition-all"
             />
           </div>
 
           {/* Image Upload */}
-          <div className="mb-6">
-            <label className="block text-lg font-semibold text-gray-700 mb-3">
+          <div className="mb-4 sm:mb-6">
+            <label className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
               {strings.uploadLabel}
             </label>
             <input
@@ -275,7 +275,7 @@ const Home = () => {
             />
             <label
               htmlFor="imageUpload"
-              className="block w-full py-4 px-6 text-center text-lg font-semibold bg-green-100 text-green-700 rounded-xl border-2 border-green-300 hover:bg-green-200 cursor-pointer transition-all"
+              className="block w-full py-3 sm:py-4 px-4 sm:px-6 text-center text-base sm:text-lg font-semibold bg-green-100 text-green-700 rounded-lg sm:rounded-xl border-2 border-green-300 active:bg-green-200 sm:hover:bg-green-200 cursor-pointer transition-all"
             >
               {image ? strings.uploadSelected : strings.uploadAdd}
             </label>
@@ -292,11 +292,11 @@ const Home = () => {
           </div>
 
           {/* Location Status */}
-          <div className="mb-6 p-5 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-2xl border-2 border-green-200 shadow-md hover:shadow-lg transition-shadow">
+          <div className="mb-4 sm:mb-6 p-3 sm:p-5 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-xl sm:rounded-2xl border-2 border-green-200 shadow-md">
             <div className="flex items-start">
-              <span className="mr-4 animate-pulse-slow">
+              <span className="mr-2 sm:mr-4 animate-pulse-slow flex-shrink-0">
                 <svg
-                  className="w-10 h-10 drop-shadow-md"
+                  className="w-7 h-7 sm:w-10 sm:h-10 drop-shadow-md"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
@@ -347,7 +347,7 @@ const Home = () => {
           <button
             onClick={handlePreview}
             disabled={!complaintText.trim() || !location}
-            className="w-full py-5 px-8 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all transform hover:scale-105"
+            className="w-full py-4 sm:py-5 px-6 sm:px-8 text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-lg active:scale-95 sm:hover:scale-105 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all transform"
           >
             {strings.previewButton}
           </button>
@@ -356,7 +356,7 @@ const Home = () => {
         {/* My Complaints Button */}
         <button
           onClick={() => navigate('/my-complaints')}
-          className="w-full py-4 px-6 text-lg font-semibold bg-white text-gray-700 rounded-xl shadow-md hover:shadow-lg transition-all"
+          className="w-full py-3 sm:py-4 px-4 sm:px-6 text-base sm:text-lg font-semibold bg-white text-gray-700 rounded-xl shadow-md active:shadow-lg sm:hover:shadow-lg transition-all"
         >
           {strings.myComplaintsButton}
         </button>

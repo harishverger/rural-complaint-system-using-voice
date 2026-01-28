@@ -163,32 +163,32 @@ const MyComplaints = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-3 sm:p-4">
       <div className="max-w-4xl mx-auto">
         {/* Banner */}
         {banner.message && (
-          <div className={`w-full ${banner.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'} border-2 rounded-lg px-4 py-3 mb-6 mt-4`}>
-            <p className="font-medium">{banner.message}</p>
+          <div className={`w-full ${banner.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'} border-2 rounded-lg px-3 sm:px-4 py-2 sm:py-3 mb-4 sm:mb-6 mt-2 sm:mt-4`}>
+            <p className="font-medium text-sm sm:text-base">{banner.message}</p>
           </div>
         )}
 
         {/* Header */}
-        <div className="text-center mb-8 pt-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+        <div className="text-center mb-6 sm:mb-8 pt-4 sm:pt-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             {strings.headerMyComplaints}
           </h1>
-          <p className="text-gray-600">{strings.headerMyComplaintsSubtitle}</p>
+          <p className="text-gray-600 text-sm sm:text-base">{strings.headerMyComplaintsSubtitle}</p>
         </div>
 
         {/* Filter Buttons */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-          <div className="flex flex-wrap gap-3">
+        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             <button
               onClick={() => setFilter('all')}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+              className={`px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all ${
                 filter === 'all'
                   ? 'bg-purple-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 text-gray-700 active:bg-gray-200 sm:hover:bg-gray-200'
               }`}
             >
               {strings.filterAll} ({complaints.length})
@@ -326,16 +326,16 @@ const MyComplaints = () => {
 
                     {/* Action Buttons */}
                     {!editingComplaint && complaint.status === 'Open' && (
-                      <div className="flex gap-2 mt-3">
+                      <div className="flex flex-wrap gap-2 mt-3">
                         <button
                           onClick={() => handleStartEdit(complaint)}
-                          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all font-semibold text-sm"
+                          className="flex-1 min-w-[120px] px-3 sm:px-4 py-2 bg-blue-500 text-white rounded-lg active:bg-blue-600 sm:hover:bg-blue-600 transition-all font-semibold text-sm"
                         >
                           ✏️ Edit
                         </button>
                         <button
                           onClick={() => handleOpenDeleteModal(complaint)}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all font-semibold text-sm"
+                          className="flex-1 min-w-[120px] px-3 sm:px-4 py-2 bg-red-500 text-white rounded-lg active:bg-red-600 sm:hover:bg-red-600 transition-all font-semibold text-sm"
                         >
                           🗑️ Delete
                         </button>

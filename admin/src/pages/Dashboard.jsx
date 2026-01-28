@@ -222,27 +222,32 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* Mobile scroll hint */}
+      <div className="sm:hidden bg-blue-50 border-b border-blue-200 py-2 px-3 text-center">
+        <p className="text-xs text-blue-700">👉 Swipe table left/right to see all columns</p>
+      </div>
+      
       {/* Page Banner */}
       {banner.message && (
         <div className={`w-full ${banner.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'} border-b ${banner.type === 'success' ? 'border-green-200' : 'border-red-200'} py-2` }>
-          <div className="max-w-7xl mx-auto px-4 text-sm font-medium">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 text-sm font-medium">
             {banner.message}
           </div>
         </div>
       )}
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-              <p className="text-purple-100 mt-1">
-                Welcome, {localStorage.getItem('adminEmail')}
+              <h1 className="text-xl sm:text-3xl font-bold">Admin Dashboard</h1>
+              <p className="text-purple-100 mt-1 text-xs sm:text-base truncate max-w-[200px] sm:max-w-none">
+                {localStorage.getItem('adminEmail')}
               </p>
             </div>
             <button
               onClick={handleLogout}
-              className="px-6 py-2 bg-white text-purple-600 font-semibold rounded-lg hover:bg-purple-50 transition-all"
+              className="px-3 sm:px-6 py-2 bg-white text-purple-600 font-semibold rounded-lg active:bg-purple-50 sm:hover:bg-purple-50 transition-all text-sm sm:text-base"
             >
               Logout
             </button>
@@ -347,17 +352,17 @@ const Dashboard = () => {
 
         {/* Complaints Table */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800">
+          <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800">
               Complaints List ({filteredComplaints.length})
             </h2>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[800px]">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
