@@ -191,7 +191,7 @@ const Home = () => {
               {/* Ground line */}
               <line x1="2" y1="21" x2="22" y2="21" stroke="#7c3aed" strokeWidth="0.5" opacity="0.4" />
             </svg>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-purple-700 leading-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-purple-700 leading-tight whitespace-nowrap">
               {strings.appTitle}
             </h1>
           </div>
